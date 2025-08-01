@@ -1,0 +1,7 @@
+["Toothless", "Stormfly", "Meatlug", "BarfBelch", "Hookfang"]
+["Night Fury", "Deadly Nadder", "Gronckle", "Hideous Zippleback", "Monstrous Nightmare"]
+[9; 8; 7; 6; 5]
+[3; 4; 2; 3; 4]
+[100; 80; 90; 70; 95]
+["Hiccup", "Astrid", "Fishlegs", "Ruff&Tuff", "Snotlout"]
+5

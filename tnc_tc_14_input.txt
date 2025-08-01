@@ -1,0 +1,7 @@
+["Cloudjumper", "Skullcrusher", "Stormfly", "Hookfang"]
+["Stormcutter", "Rumblehorn", "Deadly Nadder", "Monstrous Nightmare"]
+[8; 6; 5; 9]
+[4; 3; 5; 3]
+[100; 85; 90; 95; 70]
+["Valka", "Eret", "Gobber", ""]
+4
