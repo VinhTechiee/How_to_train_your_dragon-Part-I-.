@@ -201,7 +201,6 @@ string findKthStrongestDragon(Dragon dragons[], int dragonDamages[5], int N, int
     float Max_power = -1.0;
     int index = -1; 
 
-    // TODO: Implement this function
     for (int i = 0 ; i < N; i++){
         if (dragons[i].dragonTemperament >= T){
 
@@ -239,6 +238,7 @@ string findKthStrongestDragon(Dragon dragons[], int dragonDamages[5], int N, int
 // Task 3.1
 void compatibilityCheck(Dragon dragons[], string warriorName, int warriorSkill){
     // TODO: Implement this function
+    cout << "Warrior      Dragon        Compatibility    Review" << endl;
     float compatibility;
     for (int i = 0; i < N; i++){
         compatibility = (10 - abs(dragons[i].dragonTemperament - warriorSkill)) / 2.0 ;
@@ -246,10 +246,7 @@ void compatibilityCheck(Dragon dragons[], string warriorName, int warriorSkill){
     }
 }
 
-void printCompatibilityTable(string fighterName, string dragonName, float compatibility)
-{
-    cout << "Warrior      Dragon        Compatibility    Review" << endl;
-
+void printCompatibilityTable(string fighterName, string dragonName, float compatibility){
     string result = (compatibility > 4) ? "Compatible" : "Not Compatible";
     
     cout << left << setw(13) << fighterName
@@ -269,10 +266,11 @@ struct WarriorDragon{
 WarriorDragon warriorDragonPairs[1000]; 
 
 void buddyMatching(Dragon dragons[], string warriors[][3]){
-    bool dragonTaken[N] = {false};  
+    cout << "Warrior      Dragon        Compatibility    Review" << endl;
+    bool dragonTaken[200] = {false};  
     float compatibility;      
     int count = 0;
-    float maxConpatibility = -1;
+    float maxCompatibility = -1;
     int bestDragonIdx= -1;
 
     for (int i = 0; i < N; i++){
@@ -283,8 +281,8 @@ void buddyMatching(Dragon dragons[], string warriors[][3]){
         for (int j = 0; j < N; j++){
             compatibility = (10 - abs(dragons[j].dragonTemperament - WarriorSkill)) / 2.0;
 
-            if (compatibility > 4.0 && !dragonTaken[j] && compatibility > maxConpatibility) {
-                maxConpatibility = compatibility;
+            if (compatibility > 4.0 && !dragonTaken[j] && compatibility > maxCompatibility) {
+                maxCompatibility = compatibility;
                 bestDragonIdx = j;
             }
         }
@@ -294,7 +292,7 @@ void buddyMatching(Dragon dragons[], string warriors[][3]){
             dragonTaken[bestDragonIdx] = true;
             warriorDragonPairs[i].warriorName = WarriorName;
             warriorDragonPairs[i].dragonName = dragons[bestDragonIdx].dragonNames;
-            warriorDragonPairs[i].compatibility = maxConpatibility;
+            warriorDragonPairs[i].compatibility = maxCompatibility;
         } 
         else{
             warriorDragonPairs[i].warriorName = WarriorName;
@@ -302,8 +300,8 @@ void buddyMatching(Dragon dragons[], string warriors[][3]){
             warriorDragonPairs[i].compatibility = 0;
         }
     }
-
-    for (int i = 0; i < N; i++) {
+    int tempN = min(4, N);
+    for (int i = 0; i < tempN; i++) {
         printCompatibilityTable(warriorDragonPairs[i].warriorName, warriorDragonPairs[i].dragonName, warriorDragonPairs[i].compatibility);
     }
 }
@@ -323,7 +321,7 @@ void fighterDamage(Dragon dragons[], string warriors[][3], int teamsDamage[]){
     int damage;
     for (int i = 0; i < N; i++){
         int WarriorSkill = stoi(warriors[i][1]);
-        damage = (dragonDamages[i] * dragons[i].ammoCounts) + (WarriorSkill * 5);
+        damage = (dragonDamages[dragons[i].dragonTypes-1] * dragons[i].ammoCounts) + (WarriorSkill * 5);
         teamsDamage[i]= damage;
         cout << warriors[i][0] << "-" << dragons[i].dragonNames << ": damage = " << damage << endl;
         }
@@ -581,116 +579,116 @@ void ForwardorBackward(int &x, int &y, int &destinationX, int &destinationY){
 pair <int, int> save[500];
 int k=0;
 
-void totalTime(int map[10][10], int warriorDamage, int HP) {
-    // TODO: Implement this function
-    int keyX, keyY;
-    int heritageX, heritageY;
-    int timeIllusionDragonX, timeIllusionDragonY;
-    int reversingDragonX, reversingDragonY;
+// void totalTime(int map[10][10], int warriorDamage, int HP) {
+//     // TODO: Implement this function
+//     int keyX, keyY;
+//     int heritageX, heritageY;
+//     int timeIllusionDragonX, timeIllusionDragonY;
+//     int reversingDragonX, reversingDragonY;
 
-    int total_Time = 0;
-    int StartX = 0, StartY = 0;
+//     int total_Time = 0;
+//     int StartX = 0, StartY = 0;
 
-    bool defeated[10][10] = {false};
-    bool hasKey = false;
+//     bool defeated[10][10] = {false};
+//     bool hasKey = false;
 
-    findHeritageLocation (map, heritageX, heritageY);
-    findKeyLocation (map, keyX, keyY);
-    findTimeIllusionDragon (map, timeIllusionDragonX, timeIllusionDragonY);
-    findChaosReversingDragon (map, reversingDragonX, reversingDragonY);
-    if (!hasKey){
-        for (int i = 0; i < 10; i++){
-            for (int j = 0; j < 10; j++){
-                int CheckDragon = map [i][j]; 
-                ForwardorBackward(StartX, StartY, keyX, keyY);
-                total_Time += CalculateTime(StartX, StartY, map, warriorDamage, total_Time, timeIllusionDragonX, timeIllusionDragonY, reversingDragonX,reversingDragonY, keyX, keyY, heritageX, heritageY);
-                HP+= CalculateHP(StartX, StartY, map, warriorDamage, total_Time, timeIllusionDragonX, timeIllusionDragonY, reversingDragonY, reversingDragonX,reversingDragonY, keyX, keyY, heritageX, heritageY);
-                if ((map[StartX][StartY] == 0) || ((StartX == keyX) && (StartY == keyY) || ((StartX == heritageX) && (StartY == heritageY)) ){
+//     findHeritageLocation (map, heritageX, heritageY);
+//     findKeyLocation (map, keyX, keyY);
+//     findTimeIllusionDragon (map, timeIllusionDragonX, timeIllusionDragonY);
+//     findChaosReversingDragon (map, reversingDragonX, reversingDragonY);
+//     if (!hasKey){
+//         for (int i = 0; i < 10; i++){
+//             for (int j = 0; j < 10; j++){
+//                 int CheckDragon = map [i][j]; 
+//                 ForwardorBackward(StartX, StartY, keyX, keyY);
+//                 total_Time += CalculateTime(StartX, StartY, map, warriorDamage, total_Time, timeIllusionDragonX, timeIllusionDragonY, reversingDragonX,reversingDragonY, keyX, keyY, heritageX, heritageY);
+//                 HP+= CalculateHP(StartX, StartY, map, warriorDamage, total_Time, timeIllusionDragonX, timeIllusionDragonY, reversingDragonY, reversingDragonX,reversingDragonY, keyX, keyY, heritageX, heritageY);
+//                 if ((map[StartX][StartY] == 0) || ((StartX == keyX) && (StartY == keyY) || ((StartX == heritageX) && (StartY == heritageY)) ){
 
-                }
-                if ( map[StartX][StartY] >= 1 && map[StartX][StartY] <= 200 ){
-                    if ( StartX == timeIllusionDragonX && StartY == timeIllusionDragonY){
-                        if (!defeated [i][j]) {
+//                 }
+//                 if ( map[StartX][StartY] >= 1 && map[StartX][StartY] <= 200 ){
+//                     if ( StartX == timeIllusionDragonX && StartY == timeIllusionDragonY){
+//                         if (!defeated [i][j]) {
 
-                        }
-                    }
-                    else if ( StartX == reversingDragonX && StartY == reversingDragonY){
-                        if (!defeated [i][j]) {
+//                         }
+//                     }
+//                     else if ( StartX == reversingDragonX && StartY == reversingDragonY){
+//                         if (!defeated [i][j]) {
 
-                        }
-                        swapPosition(i, j);
-                    }
-                    else{
-                        if (!defeated [i][j]) {
+//                         }
+//                         swapPosition(i, j);
+//                     }
+//                     else{
+//                         if (!defeated [i][j]) {
 
-                        }
-                    }
-                }
+//                         }
+//                     }
+//                 }
                 
-            }
-        }
-    }
+//             }
+//         }
+//     }
 
-    for (int i=0; i < 10; i++){
-        // Even row: Go from left to right
-        if (i % 2 == 0){
-            for (int j = 0; j < 10; j ++){
-                save[k++] = {i, j};
-                int DragonBaby = map[i][j];
-                if (DragonBaby >= 1 && DragonBaby <= 200 && ( i != keyX && j != keyY) && (i != heritageX && j != heritageY)) {
-                    if (!defeated[i][j]) {
-                        if (warriorDamage < DragonBaby) {
-                            --HP;
-                            if (HP <= 0) {
+//     for (int i=0; i < 10; i++){
+//         // Even row: Go from left to right
+//         if (i % 2 == 0){
+//             for (int j = 0; j < 10; j ++){
+//                 save[k++] = {i, j};
+//                 int DragonBaby = map[i][j];
+//                 if (DragonBaby >= 1 && DragonBaby <= 200 && ( i != keyX && j != keyY) && (i != heritageX && j != heritageY)) {
+//                     if (!defeated[i][j]) {
+//                         if (warriorDamage < DragonBaby) {
+//                             --HP;
+//                             if (HP <= 0) {
                                 
 
-                                for (int idx = 0; idx < k; ++idx) {
+//                                 for (int idx = 0; idx < k; ++idx) {
                                     
-                                }
+//                                 }
 
                                 
-                                return;
-                            }
-                        }
-                        defeated[i][j] = true;
-                        total_Time += 5;
-                    } else {
-                        total_Time += 2;
-                    }
-                } else {
-                    total_Time += 2;
-                }
-            }
-        } else {
-            // Odd row: Go from right to left
-            for (int j = N-1; j >= 0; --j) {
-                save[k++] = {i, j};
-                int DragonBaby = map[i][j];
-                if (DragonBaby >= 1 && DragonBaby <= 200  && ( i != keyX && j != keyY) && (i != heritageX && j != heritageY)) {
-                    if (!defeated[i][j]) {
-                        if (warriorDamage < DragonBaby) {
-                            --HP;
-                            if (HP <= 0) {
+//                                 return;
+//                             }
+//                         }
+//                         defeated[i][j] = true;
+//                         total_Time += 5;
+//                     } else {
+//                         total_Time += 2;
+//                     }
+//                 } else {
+//                     total_Time += 2;
+//                 }
+//             }
+//         } else {
+//             // Odd row: Go from right to left
+//             for (int j = N-1; j >= 0; --j) {
+//                 save[k++] = {i, j};
+//                 int DragonBaby = map[i][j];
+//                 if (DragonBaby >= 1 && DragonBaby <= 200  && ( i != keyX && j != keyY) && (i != heritageX && j != heritageY)) {
+//                     if (!defeated[i][j]) {
+//                         if (warriorDamage < DragonBaby) {
+//                             --HP;
+//                             if (HP <= 0) {
                                 
-                                for (int idx = 0; idx < k; ++idx) {
+//                                 for (int idx = 0; idx < k; ++idx) {
                                     
-                                }
+//                                 }
                                 
-                                return;
-                            }
-                        }
-                        defeated[i][j] = true;
-                        total_Time += 5;
-                    } else {
-                        total_Time += 2;
-                    }
-                } else {
-                    total_Time += 2;
-                }
-            }
-        }
-    }
-}
+//                                 return;
+//                             }
+//                         }
+//                         defeated[i][j] = true;
+//                         total_Time += 5;
+//                     } else {
+//                         total_Time += 2;
+//                     }
+//                 } else {
+//                     total_Time += 2;
+//                 }
+//             }
+//         }
+//     }
+// }
 
 // // ////////////////////////////////////////////////
 // // /// END OF STUDENT'S ANSWER

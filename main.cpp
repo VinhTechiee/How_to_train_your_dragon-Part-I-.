@@ -26,10 +26,18 @@ void sampleTest(string filename = "input/tnc_tc_12_input.txt", string outputFile
     // Display detailed dragon statistics
     // displayDragonStats(dragons, dragonDamages, N);
 }
-int main() {
-    cout <<readFile("tnc_tc_12_input.txt", dragons,dragonDamages, N)<< endl;
-    string warriors_14[3][3] = {{"Valka", "10", "0"},{"Eret", "6", "1"},{"Gobber", "4", "2"},};
-    buddyMatching(dragons, warriors_14);
+int main() {	
+ cout << readFile("tnc_tc_12_input.txt", dragons, dragonDamages, N) << endl;
 
+  string fighters_18[5][3] = {
+      {"Valka", "8", "1"},
+      {"Eret", "5", "2"},
+      {"Stoick", "10", "3"},
+      {"Grimmel", "7", "0"},
+      {"Spitelout", "6", "4"},
+  };
+
+  int teamDamage_18[5];
+  fighterDamage(dragons, fighters_18, teamDamage_18);
     return 0;
 }
