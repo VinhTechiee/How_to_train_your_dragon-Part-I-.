@@ -178,7 +178,6 @@ string findKthStrongestDragon(Dragon dragons[], int dragonDamages[5], int N, int
     float Max_power = -1.0;
     int index = -1; 
 
-    // TODO: Implement this function
     for (int i = 0 ; i < N; i++){
         if (dragons[i].dragonTemperament >= T){
 
@@ -226,8 +225,7 @@ void compatibilityCheck(Dragon dragons[], string warriorName, int warriorSkill){
     }
 }
 
-void printCompatibilityTable(string fighterName, string dragonName, float compatibility)
-{
+void printCompatibilityTable(string fighterName, string dragonName, float compatibility){
     string result = (compatibility > 4) ? "Compatible" : "Not Compatible";
     
     cout << left << setw(13) << fighterName
@@ -238,11 +236,15 @@ void printCompatibilityTable(string fighterName, string dragonName, float compat
 
 
 // Task 3.2
+
+WarriorDragon warriorDragonPairs[1000]; 
+
 void buddyMatching(Dragon dragons[], string warriors[][3]){
-    bool dragonTaken[MAX_DRAGONS] = {false};  
-    float compatibility;      
 
     cout << "Warrior      Dragon        Compatibility    Review" << endl;
+
+    bool dragonTaken[200] = {false};  
+    float compatibility;      
 
     for (int i = 0; i < N; i++){
         string WarriorName = warriors[i][0];
@@ -252,86 +254,91 @@ void buddyMatching(Dragon dragons[], string warriors[][3]){
         int bestDragonIdx= -1;
 
         for (int j = 0; j < N; j++){
-
             if (dragonTaken[j]) continue;
             compatibility = (10 - abs(dragons[j].dragonTemperament - WarriorSkill)) / 2.0;
 
-            if (compatibility > 4.0 && compatibility > maxCompatibility){
+            if (compatibility > 4.0 && !dragonTaken[j] && compatibility > maxCompatibility) {
                 maxCompatibility = compatibility;
                 bestDragonIdx = j;
             }
         }
 
+
         if (bestDragonIdx != -1){
             dragonTaken[bestDragonIdx] = true;
-            printCompatibilityTable(WarriorName, dragons[bestDragonIdx].dragonNames, maxCompatibility);
+            warriorDragonPairs[i].warriorName = WarriorName;
+            warriorDragonPairs[i].dragonName = dragons[bestDragonIdx].dragonNames;
+            warriorDragonPairs[i].compatibility = maxCompatibility;
+        } 
+        else{
+            warriorDragonPairs[i].warriorName = WarriorName;
+            warriorDragonPairs[i].dragonName = "None";
+            warriorDragonPairs[i].compatibility = 0;
+        }
+    }
+
+    for (int i = 0; i < N; i++){
+        if (warriorDragonPairs[i].compatibility >= 4){
+            printCompatibilityTable(warriorDragonPairs[i].warriorName, warriorDragonPairs[i].dragonName, warriorDragonPairs[i].compatibility);
         }
     }
 }
 
 // Task 4
 int IDcell (int x, int y){
-     return (x + y) % 5;
+    return (x + y) % 5;
 }
 
 int timeFromStartToItem (int x, int y){
-    return ((1 + (x + y)*2 )) * 5;
+    return (1 + (x + y*2 ) ) * 5;
 }
 
-int timeFromItemToSart (int x, int y){
-    return abs (((x + y * 2) -1 ))* 5;
+int timeFromItemToStart (int x, int y){
+    return abs (  (x + y * 2) - 1 )* 5;
 }
 
-void swapPosition(int &x, int &y) {
-    int temp = x;
-    x = y;  
-    y = temp;
-}
-
-int computeTime (int IDwarriors, int map[10][10]){
+int computeTime(int IDwarriors, int map[10][10]){
     int time = 0;
+    int currentX = 0, currentY = 0;
+    bool checkStart = false;
+    if (map[0][0] == IDwarriors && IDwarriors != IDcell(0, 0)){
+        time += timeFromStartToItem(0, 0) + timeFromItemToStart(0, 0);
+    } 
+    else{
+        time += 5;
+    }
 
-    for (int i = 0; i < 10; i++){
-        // Even row: Go from left to right 
-        if (i % 2 == 0){
-            for (int j = 0; j < 10; j++){
-                int cellID  = IDcell(i, j);
-                bool hasItem = (map[i][j] == IDwarriors);
-
-                if (cellID != IDwarriors){
-                    time += 5;
+    // 2) Other cells
+    for (currentX = 0; currentX < 10; currentX++){
+        if (currentX % 2 == 0){
+            int startY = (currentX == 0 ? 1 : 0);
+            for (currentY = startY; currentY < 10; currentY++){
+                time += 5;
+                if (checkStart) {
+                    time += timeFromStartToItem(currentX, currentY);
+                    checkStart = false;
                 }
-
-                else{
-                    if (hasItem){
-                        time += timeFromStartToItem(i, j) + timeFromItemToSart(i, j);
-                    }else {
-                        time += timeFromStartToItem(i, j) + 5;
-                    }
+                if (map[currentX][currentY] == IDwarriors && IDwarriors != IDcell(currentX, currentY) ) {
+                    time += timeFromItemToStart(currentX, currentY);
+                    checkStart = true;
                 }
             }
         } 
-        // Odd row: Go from right to left
-        else {
-            for (int j = 9; j >= 0; j--) {
-                int cellID  = IDcell(i, j);
-                bool hasItem = (map[i][j] == IDwarriors);
-
-                if (cellID != IDwarriors){
-                    time += 5;
+        else{
+            for (currentY = 9; currentY >= 0; currentY--){
+                time += 5;
+                if (checkStart) {
+                    time += timeFromStartToItem(currentX, currentY);
+                    checkStart = false;
                 }
-
-                else {
-                    if (hasItem){
-                        time += timeFromStartToItem(i, j) + timeFromItemToSart(i, j);
-                    } 
-                    else{
-                        time += timeFromStartToItem(i, j) + 5;
-                    }
-                }
+                if (map[currentX][currentY] == IDwarriors && IDwarriors != IDcell(currentX, currentY) ) {
+                    time += timeFromItemToStart(currentX, currentY);
+                    checkStart = true;
+                } 
             }
         }
     }
+
     return time;
 }
 
@@ -347,22 +354,22 @@ void computeChallengeTime(string warriors[][3], int map[10][10])
         int IDwarrior = stoi(warriors[i][2]);
         times[i].time = computeTime (IDwarrior, map);
     }
-        cout << left << setw(15) << "Warrior" << "Total time (secs)" << endl;
 
-    for (int k = 0; k < K && k < N; k++){
+    for (int k = 0; k < N; k++){
         int minIdx = k;
-        for (int i = k + 1; i < N; ++i) {
+        for (int i = k + 1; i < N; i++) {
             if (times[i].time < times[minIdx].time) {
                 minIdx = i;
             }
         }
-        
-        swapPosition(times[k].time, times[minIdx].time);
-        string tmpName = times[k].WarriorName;
-        times[k].WarriorName = times[minIdx].WarriorName;
-        times[minIdx].WarriorName = tmpName;
+        swap(times[k], times[minIdx]);
+    }
+    
+    cout << left << setw(15) << "Warrior" << "Total time (secs)" << endl;
 
-         cout << left << setw(15) << times[k].WarriorName << times[k].time << endl;
+    int tempN = min(K, N);
+    for (int i = 0; i < tempN; i++){
+         cout << left << setw(15) << times[i].WarriorName << times[i].time << endl;
     }
 }
 
@@ -373,18 +380,25 @@ void fighterDamage(Dragon dragons[], string warriors[][3], int teamsDamage[]){
     int damage;
     for (int i = 0; i < N; i++){
         int WarriorSkill = stoi(warriors[i][1]);
-        damage = (dragonDamages[i] * dragons[i].ammoCounts) + (WarriorSkill * 5);
+        damage = (dragonDamages[dragons[i].dragonTypes-1] * dragons[i].ammoCounts) + (WarriorSkill * 5);
         teamsDamage[i]= damage;
         cout << warriors[i][0] << "-" << dragons[i].dragonNames << ": damage = " << damage << endl;
         }
 }
 
+
 // Task 5.2
+
+pair <int, int> save[500];
+int k = 0;
+bool hasKey = false;
+
+
 void findHeritageLocation(int map[10][10], int &heritageX, int &heritageY){
     // TODO: Implement this function
     for (int i = 0; i < 10; i++){
         int minValueRow= map[i][0]; 
-        int minCol=0;
+        int minCol = 0;
 
         for (int j = 0; j < 10; j++){
             if (minValueRow >  map[i][j]){
@@ -401,7 +415,6 @@ void findHeritageLocation(int map[10][10], int &heritageX, int &heritageY){
             }
         }
 
-
         if (isSaddle){
             heritageX = i;
             heritageY = minCol;
@@ -412,13 +425,13 @@ void findHeritageLocation(int map[10][10], int &heritageX, int &heritageY){
 
 
 void findKeyLocation(int map[10][10], int &keyX, int &keyY){
-    int sum = 0;
     int maxSum = -1;
     int centerX = -1;
     int centerY = -1;
 
     for (int i = 1; i < 9; i++){
         for (int j = 1; j < 9; j++){
+            int sum = 0;
             for (int di = -1; di <= 1; di++){
                 for (int dj = -1; dj <= 1; dj++){
                     sum += map[i+di][j+dj];
@@ -439,8 +452,8 @@ void findKeyLocation(int map[10][10], int &keyX, int &keyY){
 
 void findTimeIllusionDragon(int map[10][10], int &timeIllusionDragonX, int &timeIllusionDragonY) {
     int maxVal = map[0][0];
-    timeIllusionDragonX = -1;
-    timeIllusionDragonY = -1;
+    timeIllusionDragonX = 0;
+    timeIllusionDragonY = 0;
 
     for (int j = 0; j < 10; j++){
         if (map[0][j] > maxVal){
@@ -510,29 +523,36 @@ void findChaosReversingDragon(int map[10][10], int &reversingDragonX, int  &reve
 int calculateHP(int &x, int &y, int map[10][10], int warriorDamage, int &HP, const SpecialPoints &sp){
     int CellValue = map[x][y]; 
 
-    // Normal Ground Cell or Treasure Cell or Key Cell
-    if ( (CellValue == 0) || (x == sp.keyX && y == sp.keyY) || ( x == sp.heritageX && y == sp.heritageY ) ) {
+    // Normal Ground Cell or Heritage Cell or Key Cell
+    if (  ( (CellValue == 0) || (x == sp.keyX && y == sp.keyY) || ( x == sp.heritageX && y == sp.heritageY ) ) ){
         return HP;  
     }
 
-    // Dragon Cell
-    if (CellValue >= 1 && CellValue <= 200) {
-        
+    // Dragons Cell
+    if (CellValue >= 1 && CellValue <= 200){
+        // Time Illusion Dragon
         if ( x == sp.timeIllusionDragonX && y == sp.timeIllusionDragonY){
             if (warriorDamage < CellValue){
                 HP -= 2;
-                if (x > 0) --x;
+                if (x > 0){
+                    --x;
+                } 
+                else{
+                    x = 0;
+                    y = 0;
+                }
             }
         }
-
+        // ChaosReversing Dragon
         else if (x == sp.reversingDragonX && y == sp.reversingDragonY){
             if (warriorDamage < CellValue){
                 HP -= 2;
-                swapPosition (x, y);
+                swap(x, y);
+
             }
         }
-
-        else {
+        // Baby Dragon
+        else{
             if (warriorDamage < CellValue){
                 HP --;
             }
@@ -546,18 +566,25 @@ int calculateTime(int &x, int &y, int map[10][10], int warriorDamage, int &total
 
     int CellValue = map[x][y];
 
-    // Normal Ground Cell or Treasure Cell or Key Cell
-    if ( (CellValue == 0) || (x == sp.keyX && y == sp.keyY) || ( x == sp.heritageX && y == sp.heritageY ) ) {
+    // Heritage Cell or Key Cell
+    if ( (x == sp.keyX && y == sp.keyY) || ( x == sp.heritageX && y == sp.heritageY ) ) {
         totalTime += 2;
     }
 
-    // Dragon Cell
-    if (CellValue >= 1 && CellValue <= 200){
+    // Dragons Cell
+    else if (CellValue >= 1 && CellValue <= 200){
+        // Special Dragons
         if ((x == sp.timeIllusionDragonX && y == sp.timeIllusionDragonY) || (x == sp.reversingDragonX && y == sp.reversingDragonY)){
             totalTime += 10;  
-        } else {
+        } 
+        // Normal Dragon
+        else{
             totalTime += 5;   
         }
+    }
+    // Normal Cell
+    else{
+        totalTime += 2;
     }
     return totalTime;
 }
@@ -592,11 +619,6 @@ pair<int, int> ForwardorBackward(int &x, int &y, int destinationX, int destinati
         return pair < int, int>(x, y);
 }
 
-
-pair <int, int> save[500];
-int k = 0;
-bool hasKey = false;
-
 bool moveAndCalculate(int &StartX, int &StartY, int destinationX, int destinationY, int map[10][10],
     int warriorDamage, int &HP, int &totalTime, const SpecialPoints &sp){
     
@@ -626,44 +648,49 @@ bool moveAndCalculate(int &StartX, int &StartY, int destinationX, int destinatio
 
 void totalTime(int map[10][10], int warriorDamage, int HP) {
     // TODO: Implement this function
+    k = 0;
     SpecialPoints sp;
     int total_Time = 0;
     int StartX = 0, StartY = 0;
+    bool defeated = false;
 
     findHeritageLocation (map, sp.heritageX, sp.heritageY);
     findKeyLocation (map, sp.keyX, sp.keyY);
     findTimeIllusionDragon (map, sp.timeIllusionDragonX, sp.timeIllusionDragonY);
     findChaosReversingDragon (map, sp.reversingDragonX, sp.reversingDragonY);
 
-    if (!hasKey){
 
-        while ((StartX != sp.keyX || StartY != sp.keyY)) {
-            if (!moveAndCalculate(StartX, StartY,sp.keyX, sp.keyY, map, warriorDamage, HP, total_Time, sp)){
-                cout << "Warrior defeated! Challenge failed!" << endl;
-                    return;
-                }
-            }
+    while ((StartX != sp.keyX || StartY != sp.keyY)){
+        if (!moveAndCalculate(StartX, StartY,sp.keyX, sp.keyY, map, warriorDamage, HP, total_Time, sp)){
+            defeated = true;
+            break;
+        }
+    }
 
-    if (hasKey){
-
-        while (StartX != sp.heritageX || StartY != sp.heritageY){
-            if (!moveAndCalculate(StartX, StartY, sp.heritageX, sp.heritageY, map, warriorDamage, HP, total_Time, sp)){
-                cout << "Warrior defeated! Challenge failed!\n";
-                    return;
-                }
-            }
+    while (StartX != sp.heritageX || StartY != sp.heritageY){
+        if (!moveAndCalculate(StartX, StartY, sp.heritageX, sp.heritageY, map, warriorDamage, HP, total_Time, sp)){
+            defeated = true;
+            break;
         }
     } 
 
-    cout << "Total time: " << total_Time << " (sec)" << endl;
-    cout << "Remaining HP: " << HP << endl;
-
+    if (defeated){
+        cout << "Warrior defeated! Challenge failed!\n";
+    } 
+    else{
+        cout << "Challenge succeeded!\n";
+    }
+        
+    cout << "Total time: "   << totalTime << " (sec)\n";
+    cout << "Remaining HP: " << HP        << "\n";
+        
     cout << "Path: ";
-    for (int i = 0; i < k; i++) { // In từ mảng save[]
-        cout << "(" << save[i].first << "," << save[i].second << ") ";
+
+    for (int i = 0; i < k; i++) {
+        cout << "(" << save[i].first << "," << save[i].second << ")";
     }
     cout << endl;
-}         
+}
                 
 
 // // ////////////////////////////////////////////////

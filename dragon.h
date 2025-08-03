@@ -16,6 +16,17 @@ struct Dragon {
     string riderNames;
 };
 
+struct WarriorDragon {
+    string warriorName;  
+    string dragonName;    
+    float compatibility;
+};
+
+struct WarriorTime {
+    string WarriorName;
+    int time;
+};
+
 struct SpecialPoints{
     int keyX, keyY;
     int heritageX, heritageY;
