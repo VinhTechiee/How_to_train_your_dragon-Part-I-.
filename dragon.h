@@ -16,6 +16,14 @@ struct Dragon {
     string riderNames;
 };
 
+struct SpecialPoints{
+    int keyX, keyY;
+    int heritageX, heritageY;
+    int timeIllusionDragonX, timeIllusionDragonY;
+    int reversingDragonX, reversingDragonY;
+};
+
+
 extern Dragon dragons[MAX_DRAGONS];
 extern int dragonDamages[5];
 extern int N;
