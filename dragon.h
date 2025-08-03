@@ -23,6 +23,17 @@ struct SpecialPoints{
     int reversingDragonX, reversingDragonY;
 };
 
+struct WarriorDragon {
+    string warriorName;
+    string dragonName;
+    float compatibility;
+};
+
+struct WarriorTime {
+    string WarriorName;
+    int time;
+};
+
 
 extern Dragon dragons[MAX_DRAGONS];
 extern int dragonDamages[5];

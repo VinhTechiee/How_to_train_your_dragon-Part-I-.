@@ -178,7 +178,6 @@ string findKthStrongestDragon(Dragon dragons[], int dragonDamages[5], int N, int
     float Max_power = -1.0;
     int index = -1; 
 
-    // TODO: Implement this function
     for (int i = 0 ; i < N; i++){
         if (dragons[i].dragonTemperament >= T){
 
@@ -226,8 +225,7 @@ void compatibilityCheck(Dragon dragons[], string warriorName, int warriorSkill){
     }
 }
 
-void printCompatibilityTable(string fighterName, string dragonName, float compatibility)
-{
+void printCompatibilityTable(string fighterName, string dragonName, float compatibility){
     string result = (compatibility > 4) ? "Compatible" : "Not Compatible";
     
     cout << left << setw(13) << fighterName
@@ -236,38 +234,51 @@ void printCompatibilityTable(string fighterName, string dragonName, float compat
          << result << endl;
 }
 
+WarriorDragon warriorDragonPairs[1000]; 
 
 // Task 3.2
 void buddyMatching(Dragon dragons[], string warriors[][3]){
-    bool dragonTaken[MAX_DRAGONS] = {false};  
-    float compatibility;      
-
     cout << "Warrior      Dragon        Compatibility    Review" << endl;
+    bool dragonTaken[200] = {false};  
+    float compatibility;      
+    int count = 0;
+    float maxCompatibility = -1;
+    int bestDragonIdx= -1;
 
     for (int i = 0; i < N; i++){
         string WarriorName = warriors[i][0];
         int WarriorSkill = stoi(warriors[i][1]);
 
-        float maxCompatibility = -1;
-        int bestDragonIdx= -1;
 
         for (int j = 0; j < N; j++){
-
-            if (dragonTaken[j]) continue;
             compatibility = (10 - abs(dragons[j].dragonTemperament - WarriorSkill)) / 2.0;
 
-            if (compatibility > 4.0 && compatibility > maxCompatibility){
+            if (compatibility > 4.0 && !dragonTaken[j] && compatibility > maxCompatibility) {
                 maxCompatibility = compatibility;
                 bestDragonIdx = j;
             }
         }
 
+
         if (bestDragonIdx != -1){
             dragonTaken[bestDragonIdx] = true;
-            printCompatibilityTable(WarriorName, dragons[bestDragonIdx].dragonNames, maxCompatibility);
+            warriorDragonPairs[i].warriorName = WarriorName;
+            warriorDragonPairs[i].dragonName = dragons[bestDragonIdx].dragonNames;
+            warriorDragonPairs[i].compatibility = maxCompatibility;
+        } 
+        else{
+            warriorDragonPairs[i].warriorName = WarriorName;
+            warriorDragonPairs[i].dragonName = "None";
+            warriorDragonPairs[i].compatibility = 0;
         }
     }
+    int tempN = min(4, N);
+    for (int i = 0; i < tempN; i++) {
+        printCompatibilityTable(warriorDragonPairs[i].warriorName, warriorDragonPairs[i].dragonName, warriorDragonPairs[i].compatibility);
+    }
 }
+
+
 
 // Task 4
 int IDcell (int x, int y){
@@ -373,7 +384,7 @@ void fighterDamage(Dragon dragons[], string warriors[][3], int teamsDamage[]){
     int damage;
     for (int i = 0; i < N; i++){
         int WarriorSkill = stoi(warriors[i][1]);
-        damage = (dragonDamages[i] * dragons[i].ammoCounts) + (WarriorSkill * 5);
+        damage = (dragonDamages[dragons[i].dragonTypes-1] * dragons[i].ammoCounts) + (WarriorSkill * 5);
         teamsDamage[i]= damage;
         cout << warriors[i][0] << "-" << dragons[i].dragonNames << ": damage = " << damage << endl;
         }
