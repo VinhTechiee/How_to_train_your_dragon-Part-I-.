@@ -234,24 +234,27 @@ void printCompatibilityTable(string fighterName, string dragonName, float compat
          << result << endl;
 }
 
+// WarriorDragon warriorDragonPairs[1000]; 
 
 // Task 3.2
 
 WarriorDragon warriorDragonPairs[1000]; 
 
 void buddyMatching(Dragon dragons[], string warriors[][3]){
-
     cout << "Warrior      Dragon        Compatibility    Review" << endl;
-
     bool dragonTaken[200] = {false};  
     float compatibility;      
+    int count = 0;
+    float maxCompatibility = -1;
+    int bestDragonIdx= -1;
+
+    // bool dragonTaken[200] = {false};  
+    // float compatibility;      
 
     for (int i = 0; i < N; i++){
         string WarriorName = warriors[i][0];
         int WarriorSkill = stoi(warriors[i][1]);
 
-        float maxCompatibility = -1;
-        int bestDragonIdx= -1;
 
         for (int j = 0; j < N; j++){
             if (dragonTaken[j]) continue;
@@ -282,7 +285,13 @@ void buddyMatching(Dragon dragons[], string warriors[][3]){
             printCompatibilityTable(warriorDragonPairs[i].warriorName, warriorDragonPairs[i].dragonName, warriorDragonPairs[i].compatibility);
         }
     }
+    int tempN = min(4, N);
+    for (int i = 0; i < tempN; i++) {
+        printCompatibilityTable(warriorDragonPairs[i].warriorName, warriorDragonPairs[i].dragonName, warriorDragonPairs[i].compatibility);
+    }
 }
+
+
 
 // Task 4
 int IDcell (int x, int y){
@@ -536,6 +545,7 @@ int calculateHP(int &x, int &y, int map[10][10], int warriorDamage, int &HP, con
                 HP -= 2;
                 if (x > 0){
                     --x;
+                    save[k++] = make_pair(x, y);
                 } 
                 else{
                     x = 0;
@@ -562,59 +572,46 @@ int calculateHP(int &x, int &y, int map[10][10], int warriorDamage, int &HP, con
     return HP;  
 }
 
-int calculateTime(int &x, int &y, int map[10][10], int warriorDamage, int &totalTime, const SpecialPoints &sp){
+int calculateTime(int &x, int &y, int map[10][10], int warriorDamage, int totalTime, const SpecialPoints &sp){
 
+    if (map[x][y] == 0) {
+        return 2;
+    }
     int CellValue = map[x][y];
-
-    // Heritage Cell or Key Cell
     if ( (x == sp.keyX && y == sp.keyY) || ( x == sp.heritageX && y == sp.heritageY ) ) {
-        totalTime += 2;
+        return 2;
     }
 
     // Dragons Cell
     else if (CellValue >= 1 && CellValue <= 200){
         // Special Dragons
         if ((x == sp.timeIllusionDragonX && y == sp.timeIllusionDragonY) || (x == sp.reversingDragonX && y == sp.reversingDragonY)){
-            totalTime += 10;  
+            return 10;
         } 
         // Normal Dragon
         else{
-            totalTime += 5;   
+            return 5;
         }
     }
     // Normal Cell
     else{
-        totalTime += 2;
+        return 2;
     }
     return totalTime;
 }
 
-
-void markVisitedCells(int map[10][10], int &x, int &y) {
-    map[x][y] = 0;
-}
-
-
 pair<int, int> ForwardorBackward(int &x, int &y, int destinationX, int destinationY){
-
-        if (x == destinationX) {
-            
-            if (x % 2 == 0) {         
-                if (y < destinationY) ++y;
-                else if (y > destinationY) --y;
-            } else {                 
-                if (y > destinationY) --y;
-                else if (y < destinationY) ++y;
-            }
-        }
-        else if (x % 2 == 0) {        
-            if (y < 9) ++y;
-            else ++x;         
-        }
-        else {                        
-            if (y > 0) --y;
-            else ++x;         
-        }
+    int dir = (x % 2 == 0) ? 1 : -1;
+    bool goingForward = (dir == 1)
+        ? (x < destinationX || (x == destinationX && y < destinationY))
+        : (x < destinationX || (x == destinationX && y > destinationY));
+    if (goingForward) {
+        if ((dir == 1 && y < 9) || (dir == -1 && y > 0)) y += dir;
+        else ++x;
+    } else {
+        if ((dir == -1 && y < 9) || (dir == 1 && y > 0)) y -= dir;
+        else --x;
+    }
     
         return pair < int, int>(x, y);
 }
@@ -625,17 +622,18 @@ bool moveAndCalculate(int &StartX, int &StartY, int destinationX, int destinatio
     auto newPos = ForwardorBackward(StartX, StartY, destinationX, destinationY); 
         StartX = newPos.first;
         StartY = newPos.second; 
-        
-        totalTime = calculateTime(StartX, StartY, map, warriorDamage, totalTime, sp);
-
+        int oldStartX = StartX;
+        int oldStartY = StartY;
+        save[k++] = newPos;
+        totalTime += calculateTime(StartX, StartY, map, warriorDamage, totalTime, sp);
+        // cout<< "Current Position: (" << StartX << "," << StartY << ")\n";
+        // cout << "Total Time: " << totalTime << " (sec)\n";
         HP = calculateHP(StartX, StartY, map, warriorDamage, HP, sp);
 
-        save[k++] = newPos;
-
-        markVisitedCells (map, StartX, StartY);
+        map[oldStartX][oldStartY] = 0;
 
         if (HP <= 0) {
-            return false;  // dead!
+            return false;  
         }
 
         if (StartX == sp.keyX && StartY == sp.keyY) {
@@ -659,6 +657,10 @@ void totalTime(int map[10][10], int warriorDamage, int HP) {
     findTimeIllusionDragon (map, sp.timeIllusionDragonX, sp.timeIllusionDragonY);
     findChaosReversingDragon (map, sp.reversingDragonX, sp.reversingDragonY);
 
+    // cout << "Heritage Location: (" << sp.heritageX << "," << sp.heritageY << ")\n";
+    // cout << "Key Location: (" << sp.keyX << "," << sp.keyY << ")\n";
+    // cout << "Time Illusion Dragon Location: (" << sp.timeIllusionDragonX << "," << sp.timeIllusionDragonY << ")\n";
+    // cout << "Chaos Reversing Dragon Location: (" << sp.reversingDragonX << "," << sp.reversingDragonY << ")\n";
 
     while ((StartX != sp.keyX || StartY != sp.keyY)){
         if (!moveAndCalculate(StartX, StartY,sp.keyX, sp.keyY, map, warriorDamage, HP, total_Time, sp)){
@@ -678,10 +680,10 @@ void totalTime(int map[10][10], int warriorDamage, int HP) {
         cout << "Warrior defeated! Challenge failed!\n";
     } 
     else{
-        cout << "Challenge succeeded!\n";
+        // cout << "Challenge succeeded!\n";
     }
         
-    cout << "Total time: "   << totalTime << " (sec)\n";
+    cout << "Total time: "   << total_Time + 5 << " (sec)\n";
     cout << "Remaining HP: " << HP        << "\n";
         
     cout << "Path: ";

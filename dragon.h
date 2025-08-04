@@ -34,6 +34,17 @@ struct SpecialPoints{
     int reversingDragonX, reversingDragonY;
 };
 
+struct WarriorDragon {
+    string warriorName;
+    string dragonName;
+    float compatibility;
+};
+
+struct WarriorTime {
+    string WarriorName;
+    int time;
+};
+
 
 extern Dragon dragons[MAX_DRAGONS];
 extern int dragonDamages[5];
@@ -43,7 +54,7 @@ extern int N;
 /// STUDENT'S ANSWER BEGINS HERE
 /// Complete the following functions
 /// DO NOT modify any parameters in the functions.
-////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Task 1
 int readFile(const string filename, Dragon dragons[], int dragonDamages[5], int &N);
