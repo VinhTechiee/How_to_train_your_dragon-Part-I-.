@@ -1,16 +1,18 @@
-# 🐉 DRAGON TRAINING SYSTEM – HỆ THỐNG LUYỆN RỒNG 
+# 🐉 Dragon Training System
+### How to Train Your Dragon – Part I
 
-## 📖 Project Overview | Tổng quan dự án
+## 📖 Project Overview
 
-This project implements a dragon–warrior simulation system inspired by *How to Train Your Dragon*.
+This project implements a **dragon–warrior simulation system** inspired by the assignment  
+*How to Train Your Dragon*.
 
-The program processes a 10x10 map, calculates battle time, manages special dragon effects, and determines the final total time required to defeat dragons and complete objectives.
+The program simulates a warrior traversing a **10×10 grid-based map**, engaging in battles with different types of dragons, managing special dragon effects, and computing the **total time required** to complete all objectives and defeat the dragons.
 
-Dự án mô phỏng hệ thống chiến đấu giữa chiến binh và rồng trên bản đồ 10x10, bao gồm:
-- Tìm vị trí vật phẩm đặc biệt
-- Tính thời gian chiến đấu
-- Xử lý rồng hiệu ứng đặc biệt
-- Cập nhật HP và trạng thái tiêu diệt
+The simulation includes:
+- Detection of special locations and entities on the map
+- Battle time computation
+- Handling of dragons with special behavioral effects
+- Health point (HP) updates and elimination state tracking
 
 ---
 
@@ -33,21 +35,24 @@ Dragon-Assignment
 
 ---
 
-## ⚙ Core Functionalities | Chức năng chính
+## ⚙ Core Functionalities
 
 ### 1️⃣ Map Processing
-- 10x10 integer matrix
-- Special positions:
+
+- Fixed-size **10×10 integer matrix**
+- Identification of special positions, including:
   - Heritage location
   - Key location
   - Time Illusion Dragon
   - Chaos Reversing Dragon
 
+These positions directly affect traversal logic and battle outcomes.
+
 ---
 
 ### 2️⃣ Battle Simulation
 
-Function:
+Core function:
 ```cpp
 void totalTime(int map[10][10], int warriorDamage, int HP);
 ```
@@ -63,11 +68,10 @@ Responsibilities:
 
 ### 3️⃣ Special Dragon Effects
 
-- 🌀 Time Illusion Dragon
-- 🔄 Chaos Reversing Dragon
+- 🌀 Time Illusion Dragon - Modify time calculation during battles.
+- 🔄 Chaos Reversing Dragon - Alters movement direction or traversal logic.
 
-Each special dragon affects movement or battle calculation differently.
-
+Each special dragon introduces additional constraints that must be handled explicitly during simulation.
 ---
 
 ### 4️⃣ Supporting Functions
@@ -108,7 +112,7 @@ g++ -o main main.cpp dragon.cpp -I . -std=c++11
 - State tracking with 2D boolean array
 - Greedy traversal logic
 
-Worst-case time complexity: O(N²)
+Worst-case time complexity: O(N²), where N =  10.
 
 ---
 
