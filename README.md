@@ -1,82 +1,126 @@
-# 🐉 Dragon Training System
+# Dragon Training System
 ### How to Train Your Dragon – Part I
 
-## 📖 Project Overview
+## Project Overview
 
-This project implements a **dragon–warrior simulation system** inspired by the assignment  
-*How to Train Your Dragon*.
+The **Dragon Training System** is a simulation-based program written in **C++** that models a warrior navigating a dragon-infested map.
 
-The program simulates a warrior traversing a **10×10 grid-based map**, engaging in battles with different types of dragons, managing special dragon effects, and computing the **total time required** to complete all objectives and defeat the dragons.
+The system processes a **10×10 grid-based battlefield** where the warrior must locate key positions, encounter dragons, and resolve battles while managing health points and special dragon effects.
 
-The simulation includes:
-- Detection of special locations and entities on the map
-- Battle time computation
-- Handling of dragons with special behavioral effects
-- Health point (HP) updates and elimination state tracking
+The objective of the simulation is to determine the **total time required** for the warrior to complete the mission while correctly handling all dragon interactions and map constraints.
+
+This project was developed as part of a **programming assignment focused on simulation and algorithmic problem solving**.
 
 ---
 
-## 🏗 Project Structure
+## Key Features
+
+### Map-Based Simulation
+- Fixed **10×10 grid map**
+- Detection of special locations
+- Grid traversal and state tracking
+
+### Battle Mechanics
+- Combat time calculation
+- Warrior health management
+- Dragon elimination tracking
+
+### Special Dragon Behaviors
+Certain dragons introduce special gameplay effects:
+
+- **Time Illusion Dragon** – modifies battle time calculations
+- **Chaos Reversing Dragon** – alters traversal direction or movement behavior
+
+These effects require additional logic during the simulation process.
+
+---
+
+---
+
+## Simulation Flow
 
 ```
-Dragon-Assignment
-├── dragon.h
-├── dragon.cpp
-├── main.h
-├── main.cpp
-├── run.sh
-├── tnc_tc_01_input.txt
-├── tnc_tc_02_input.txt
-├── ...
-├── tnc_tc_14_input.txt
-├── main.exe
-└── README.md
+Load Map
+   ↓
+Locate Special Positions
+   ↓
+Traverse Grid
+   ↓
+Encounter Dragon
+   ↓
+Compute Battle Time
+   ↓
+Update Warrior HP
+   ↓
+Apply Special Dragon Effects
+   ↓
+Continue Traversal
+   ↓
+Compute Total Time
 ```
 
 ---
 
-## ⚙ Core Functionalities
+## Battle Map Visualization
 
-### 1️⃣ Map Processing
+The simulation takes place on a **10 × 10 grid-based battlefield**.  
+Each cell may represent an empty location, a dragon encounter, or a special position affecting the warrior's journey.
 
-- Fixed-size **10×10 integer matrix**
-- Identification of special positions, including:
-  - Heritage location
-  - Key location
-  - Time Illusion Dragon
-  - Chaos Reversing Dragon
+Example conceptual map:
 
-These positions directly affect traversal logic and battle outcomes.
+```
++----+----+----+----+----+----+----+----+----+----+
+| W  | 0  | 0  | D  | 0  | 0  | 0  | 0  | 0  | 0  |
++----+----+----+----+----+----+----+----+----+----+
+| 0  | 0  | 0  | 0  | T  | 0  | 0  | 0  | 0  | 0  |
++----+----+----+----+----+----+----+----+----+----+
+| 0  | 0  | D  | 0  | 0  | 0  | 0  | 0  | C  | 0  |
++----+----+----+----+----+----+----+----+----+----+
+| 0  | 0  | 0  | 0  | 0  | 0  | 0  | 0  | 0  | 0  |
++----+----+----+----+----+----+----+----+----+----+
+| 0  | 0  | 0  | 0  | 0  | D  | 0  | 0  | 0  | 0  |
++----+----+----+----+----+----+----+----+----+----+
+```
+
+Legend:
+
+| Symbol | Meaning |
+|------|--------|
+| **W** | Warrior starting position |
+| **D** | Dragon encounter |
+| **T** | Time Illusion Dragon |
+| **C** | Chaos Reversing Dragon |
+| **0** | Empty cell |
+
+During traversal, the warrior moves across the grid, encounters dragons, and updates the system state accordingly.
+
+Special dragons modify the traversal behavior or battle time calculations, making the simulation more complex.
 
 ---
 
-### 2️⃣ Battle Simulation
+## Core Function
 
-Core function:
+The main simulation logic is implemented in the following function:
+
 ```cpp
 void totalTime(int map[10][10], int warriorDamage, int HP);
 ```
 
-Responsibilities:
-- Move warrior across map
-- Calculate battle time
-- Reduce HP after each encounter
+### Responsibilities
+
+- Traverse the map
+- Handle dragon encounters
+- Update warrior health points
 - Track defeated dragons
 - Apply special dragon effects
+- Compute the total battle time required to complete the mission
 
 ---
 
-### 3️⃣ Special Dragon Effects
+## Supporting Functions
 
-- 🌀 Time Illusion Dragon - Modify time calculation during battles.
-- 🔄 Chaos Reversing Dragon - Alters movement direction or traversal logic.
+Examples of helper functions used in the system:
 
-Each special dragon introduces additional constraints that must be handled explicitly during simulation.
----
-
-### 4️⃣ Supporting Functions
-
-Examples:
 - `findHeritageLocation(...)`
 - `findKeyLocation(...)`
 - `findTimeIllusionDragon(...)`
@@ -85,11 +129,36 @@ Examples:
 - `CalculateHP(...)`
 - `ForwardorBackward(...)`
 
+These functions help separate different components of the simulation, improving **modularity and code readability**.
+
 ---
 
-## 🚀 How to Compile & Run
+## Project Structure
 
-### Compile (Unix environment)
+```
+Dragon-Assignment
+│
+├── dragon.h
+├── dragon.cpp
+├── main.h
+├── main.cpp
+│
+├── run.sh
+│
+├── tnc_tc_01_input.txt
+├── tnc_tc_02_input.txt
+├── ...
+├── tnc_tc_14_input.txt
+│
+├── main.exe
+└── README.md
+```
+
+---
+
+## How to Compile and Run
+
+### Compile
 
 ```bash
 g++ -o main main.cpp dragon.cpp -I . -std=c++11
@@ -101,35 +170,37 @@ g++ -o main main.cpp dragon.cpp -I . -std=c++11
 ./main tnc_tc_01_input.txt
 ```
 
-⚠ The assignment is evaluated on Unix.
+⚠ The assignment is evaluated in a **Unix environment**.
 
 ---
 
-## 📊 Algorithm Design
+## Algorithm Complexity
 
-- Map traversal: O(N²)
-- Battle simulation: O(N²)
-- State tracking with 2D boolean array
-- Greedy traversal logic
+| Component | Complexity |
+|----------|------------|
+| Map traversal | O(N²) |
+| Battle simulation | O(N²) |
+| State tracking | O(N²) |
 
-Worst-case time complexity: O(N²), where N =  10.
+Where **N = 10**, representing the dimension of the grid map.
 
 ---
 
-## 🎯 Learning Outcomes
+## Learning Outcomes
+
+This project demonstrates:
 
 - 2D array manipulation
-- Simulation-based problem solving
-- Function decomposition
-- Structured programming
-- State management in C++
+- Simulation-based algorithm design
+- Structured C++ programming
+- Function decomposition and modular design
+- State management during simulation
 
 ---
 
-## 📌 Notes
+## Notes
 
-- No additional headers allowed (follow assignment rules).
-- Code must compile using C++11.
-- All logic implemented inside `dragon.cpp`.
+- No additional headers are allowed (assignment constraints)
+- Code must compile using **C++11**
+- The core simulation logic is implemented in `dragon.cpp`
 
----
