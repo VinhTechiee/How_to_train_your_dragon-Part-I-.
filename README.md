@@ -98,6 +98,12 @@ Special dragons modify the traversal behavior or battle time calculations, makin
 
 ---
 
+## Animated Simulation
+
+![Dragon Simulation](dragon_simulation.gif)
+
+---
+
 ## Core Function
 
 The main simulation logic is implemented in the following function:
