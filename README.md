@@ -9,7 +9,7 @@ The system processes a **10×10 grid-based battlefield** where the warrior must 
 
 The objective of the simulation is to determine the **total time required** for the warrior to complete the mission while correctly handling all dragon interactions and map constraints.
 
-This project was developed as part of a **programming assignment focused on simulation and algorithmic problem solving**.
+This project was developed as part of a Programming Fundamentals (Lab) (CO1028) focused on simulation and algorithmic problem solving**.
 
 ---
 
